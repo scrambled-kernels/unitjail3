@@ -1,0 +1,51 @@
+[Unit]
+After = network.target
+After = uj3-netns-private@%i.service
+Requires = uj3-netns-private@%i.service
+Description = Unitjail3 network: %j, instance: %I
+
+[Service]
+Type = oneshot
+User = root
+Group = root
+RemainAfterExit = true
+
+PrivateNetwork = false
+PrivateTmp = true
+ProtectKernelTunables = true
+ProtectSystem = strict
+
+# mandatory overrides
+Environment = "VETH_G_IFACE_IPV4_ADDR="
+Environment = "VETH_G_MAC_ADDR="
+
+# mandatory environment file with interface settings
+EnvironmentFile = /etc/unitjail/config/network/netns/%i/ifcfg.env
+
+# do not override
+Environment = "NS_IPV6_DISABLE_FLAG=1"
+Environment = "VETH_G_IFACE_NAME=veth-g-%i"
+Environment = "VETH_NS_IFACE_NAME=veth-ns-%i"
+
+ExecStartPre = /bin/test -n ${VETH_G_IFACE_IPV4_ADDR}
+ExecStartPre = /bin/test -n ${VETH_G_IFACE_NAME}
+ExecStartPre = /bin/test -n ${VETH_G_MAC_ADDR}
+
+ExecStart = /sbin/ip --details link set address ${VETH_G_MAC_ADDR} dev ${VETH_G_IFACE_NAME}
+ExecStart = /sbin/ip --details address add ${VETH_G_IFACE_IPV4_ADDR} dev ${VETH_G_IFACE_NAME}
+ExecStart = /sbin/ip --details link set up dev ${VETH_G_IFACE_NAME}
+ExecStartPost = /sbin/ip --details --batch '/etc/unitjail/config/network/netns/%i/global.up.iproute'
+ExecStop = /bin/bash -c "if /sbin/ip --details link list dev '${VETH_G_IFACE_NAME}' 1>/dev/null 2>&1; then exec /sbin/ip --details link set down dev '${VETH_G_IFACE_NAME}'; fi; exit 0"
+ExecStop = -/bin/bash -c "if /sbin/ip --details link list dev '${VETH_G_IFACE_NAME}' 1>/dev/null 2>&1; then exec /sbin/ip --details link delete dev '${VETH_G_IFACE_NAME}'; fi; exit 0"
+ExecStop = -/sbin/ip --details --force --batch '/etc/unitjail/config/network/netns/%i/global.down.iproute'
+
+Nice = +5
+TimeoutStartSec = 8
+TimeoutStopSec = 10
+
+ReadOnlyPaths = /
+ReadOnlyPaths = -/etc/iproute2/
+ReadOnlyPaths = -/etc/nftables/
+ReadOnlyPaths = -/etc/unitjail/
+#ReadWritePaths = /proc/sys/net/ipv6/conf/all/disable_ipv6
+ReadWritePaths = /run/systemd/

@@ -1,0 +1,7 @@
+[Unit]
+After = uj3-qgis-mapserver-fcgi@t1xgis.service
+Requires = uj3-qgis-mapserver-fcgi@t1xgis.service
+
+[Service]
+BindPaths = %t/uj3-qgis-mapserver-fcgi@t1xgis/fastcgi.sock
+Environment = "QGIS_MAPSERVER_FCGI_UNIX_SOCKET_FILE_t1xgis=%t/uj3-qgis-mapserver-fcgi@t1xgis/fastcgi.sock"

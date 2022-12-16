@@ -1,0 +1,116 @@
+# status: testing
+
+[Unit]
+Description = Unitjail3 container: service: %P, instance: %I
+After = local-fs.target
+After = network.target
+After = nss-lookup.target
+After = remote-fs.target
+#After = uj2-netns-global@.service
+#After = uj2-netns-private@.service
+#After = uj2-root-directory@%p@%i.path
+#Wants = uj2-root-directory@%p@%i.path
+
+#FileIsExecutable = 
+#ConditionPathIsSymbolicLink = 
+
+[Install]
+WantedBy = multi-user.target
+
+[Service]
+Type = forking
+User = %p_%i
+Group = %p_%i
+DynamicUser = false
+
+CPUQuota = 1%
+CPUWeight = 1
+IOWeight = 1
+MemoryHigh = 1
+MemoryMax = 1
+MemorySwapMax = 0
+TasksMax = 1
+PermissionsStartOnly = false
+CapabilityBoundingSet = 
+AmbientCapabilities = 
+CacheDirectory = %p@%i/
+CacheDirectoryMode = 0750
+ConfigurationDirectory = %p@%i/
+ConfigurationDirectoryMode = 2750
+LogsDirectory = %p@%i/
+LogsDirectoryMode = 2750
+RuntimeDirectory = %p@%i/
+RuntimeDirectoryMode = 0750
+StateDirectory = %p@%i/
+StateDirectoryMode = 0750
+WorkingDirectory = /
+LockPersonality = true
+MountAPIVFS = false
+NoNewPrivileges = true
+PrivateNetwork = true
+PrivateTmp = true
+ProtectKernelTunables = true
+SystemCallFilter = ~@mount
+TemporaryFileSystem = /:rw
+BindReadOnlyPaths = /etc/alternatives/
+BindReadOnlyPaths = -/etc/ld.so.cache
+BindReadOnlyPaths = -/etc/ld.so.conf
+BindReadOnlyPaths = -/etc/ld.so.conf.d/
+BindReadOnlyPaths = -/etc/machine-id
+BindReadOnlyPaths = -/etc/mime.types
+BindReadOnlyPaths = -/etc/selinux/
+BindReadOnlyPaths = -/bin/echo
+BindReadOnlyPaths = -/usr/bin/test
+BindReadOnlyPaths = -/usr/bin/touch
+BindReadOnlyPaths = -/lib/
+BindReadOnlyPaths = -/lib32/
+BindReadOnlyPaths = -/lib64/
+BindReadOnlyPaths = -/sys/fs/selinux/
+BindReadOnlyPaths = -/usr/lib/locale/
+BindReadOnlyPaths = -/usr/lib/
+BindReadOnlyPaths = -/usr/lib32/
+BindReadOnlyPaths = -/usr/lib64/
+BindReadOnlyPaths = -/usr/lib64/gconv/
+BindReadOnlyPaths = -/usr/share/fonts/
+BindReadOnlyPaths = -/usr/share/locale/
+BindReadOnlyPaths = -/usr/share/terminfo/
+BindReadOnlyPaths = -/usr/share/zoneinfo/
+#BindPaths = %t/%p@%i/
+BindPaths = %t/systemd/journal/
+BindPaths = %t/systemd/notify
+BindPaths = %t/systemd/private
+BindPaths = -/dev/log
+BindPaths = /dev/full
+BindPaths = /dev/null
+BindPaths = /dev/random
+BindPaths = /dev/urandom
+BindPaths = /dev/zero
+BindPaths = /sys/fs/cgroup/
+Environment = "LANG=C"
+Environment = "LC_ALL=C"
+Environment = "PATH=/usr/sbin:/usr/bin:/sbin:/bin"
+Environment = "TERM=xterm-256color"
+Environment = "TMPDIR=/tmp"
+Environment = "TZ=UTC"
+Environment = "UNITJAIL_INSTANCE_NAME_E=%i"
+Environment = "UNITJAIL_INSTANCE_NAME_U=%I"
+Environment = "UNITJAIL_INSTANCE_RUN_DIR=%t/%p@%i"
+Environment = "UNITJAIL_INSTANCE_PID_FILE=%t/%p@%i/master.pid"
+#Environment = "UNITJAIL_SERVICE_UID_MIN=65536"
+UMask = 7022
+ExecStartPre = /usr/bin/test '!' -e '/boot' -a '!' -e '/lost+found' -a '!' -e '/media' -a '!' -e '/mnt' -a '!' -e '/etc/unitjail' -a '!' -e '/usr/src'
+ExecStartPost = /usr/bin/test '!' -e '/boot' -a '!' -e '/lost+found' -a '!' -e '/media' -a '!' -e '/mnt' -a '!' -e '/etc/unitjail' -a '!' -e '/usr/src'
+PIDFile = %t/%p@%i/master.pid
+SuccessExitStatus = 0
+TimeoutStartSec = 15
+TimeoutStopSec = 30
+RemainAfterExit = false
+Restart = on-abort
+RestartSec = 5s
+KillSignal = SIGTERM
+SendSIGKILL = false
+LimitCORE = 0
+LimitNOFILE = 8192
+
+# changelog
+# 2022-12-04: created Unitjail.v3 template file
