@@ -21,7 +21,7 @@ Environment = "VETH_NS_IFACE_IPV4_ADDR="
 Environment = "VETH_NS_MAC_ADDR="
 
 # mandatory environment file with interface settings
-EnvironmentFile = /etc/unitjail/config/network/netns/%i/ifcfg.env
+EnvironmentFile = /etc/unitjail3/config/network/netns/%i/ifcfg.env
 
 # do not override
 Environment = "G_NS_PID=1"
@@ -42,9 +42,9 @@ ExecStart = /sbin/ip --details address add ${VETH_NS_IFACE_IPV4_ADDR} dev ${VETH
 ExecStart = /sbin/ip --details link set up dev ${VETH_NS_IFACE_NAME}
 ExecStart = /bin/bash -c "exec /sbin/ip --details route add default via $(echo '${VETH_G_IFACE_IPV4_ADDR}' |cut -d '/' -f 1)"
 
-ExecStartPost = /usr/sbin/nft -f '/etc/unitjail/config/network/netns/%i/private.nft'
-ExecStartPost = /sbin/ip --details --batch '/etc/unitjail/config/network/netns/common.private.up.iproute'
-ExecStartPost = /sbin/ip --details --batch '/etc/unitjail/config/network/netns/%i/private.up.iproute'
+ExecStartPost = /usr/sbin/nft -f '/etc/unitjail3/config/network/netns/%i/private.nft'
+ExecStartPost = /sbin/ip --details --batch '/etc/unitjail3/config/network/netns/common.private.up.iproute'
+ExecStartPost = /sbin/ip --details --batch '/etc/unitjail3/config/network/netns/%i/private.up.iproute'
 
 ExecStop = /bin/bash -c "if /sbin/ip link list dev '${VETH_NS_IFACE_NAME}' 1>/dev/null 2>&1; then /sbin/ip link set down dev '${VETH_NS_IFACE_NAME}'; fi; exit 0"
 ExecStop = /bin/bash -c "if /sbin/ip link list dev '${VETH_NS_IFACE_NAME}' 1>/dev/null 2>&1; then exec /sbin/ip link delete dev '${VETH_NS_IFACE_NAME}'; fi; exit 0"
@@ -58,6 +58,6 @@ TimeoutStopSec = 10
 ReadOnlyPaths = /
 ReadOnlyPaths = -/etc/iproute2/
 ReadOnlyPaths = -/etc/nftables/
-ReadOnlyPaths = -/etc/unitjail/
+ReadOnlyPaths = -/etc/unitjail3/
 ReadWritePaths = /proc/sys/net/ipv6/conf/all/disable_ipv6
 ReadWritePaths = /run/systemd/
