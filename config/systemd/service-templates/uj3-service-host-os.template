@@ -1,18 +1,11 @@
 # status: testing
 
 [Unit]
-Description = Unitjail3 container: service: %P, instance: %I
+Description = Unitjail3 container - service: %P, instance: %I
 After = local-fs.target
 After = network.target
 After = nss-lookup.target
 After = remote-fs.target
-#After = uj2-netns-global@.service
-#After = uj2-netns-private@.service
-#After = uj2-root-directory@%p@%i.path
-#Wants = uj2-root-directory@%p@%i.path
-
-#FileIsExecutable = 
-#ConditionPathIsSymbolicLink = 
 
 [Install]
 WantedBy = multi-user.target
@@ -60,8 +53,8 @@ BindReadOnlyPaths = -/etc/machine-id
 BindReadOnlyPaths = -/etc/mime.types
 BindReadOnlyPaths = -/etc/selinux/
 BindReadOnlyPaths = -/bin/echo
-BindReadOnlyPaths = -/usr/bin/test
-BindReadOnlyPaths = -/usr/bin/touch
+BindReadOnlyPaths = /usr/bin/test
+BindReadOnlyPaths = /usr/bin/touch
 BindReadOnlyPaths = -/lib/
 BindReadOnlyPaths = -/lib32/
 BindReadOnlyPaths = -/lib64/
@@ -75,7 +68,6 @@ BindReadOnlyPaths = -/usr/share/fonts/
 BindReadOnlyPaths = -/usr/share/locale/
 BindReadOnlyPaths = -/usr/share/terminfo/
 BindReadOnlyPaths = -/usr/share/zoneinfo/
-#BindPaths = %t/%p@%i/
 BindPaths = %t/systemd/journal/
 BindPaths = %t/systemd/notify
 BindPaths = %t/systemd/private
@@ -96,7 +88,8 @@ Environment = "UNITJAIL_INSTANCE_NAME_E=%i"
 Environment = "UNITJAIL_INSTANCE_NAME_U=%I"
 Environment = "UNITJAIL_INSTANCE_RUN_DIR=%t/%p@%i"
 Environment = "UNITJAIL_INSTANCE_PID_FILE=%t/%p@%i/master.pid"
-#Environment = "UNITJAIL_SERVICE_UID_MIN=65536"
+EnvironmentFile = -/etc/default/%p
+EnvironmentFile = -/etc/default/%p@%i
 UMask = 7022
 ExecStartPre = /usr/bin/test '!' -e '/boot' -a '!' -e '/lost+found' -a '!' -e '/media' -a '!' -e '/mnt' -a '!' -e '/etc/unitjail' -a '!' -e '/usr/src'
 ExecStartPost = /usr/bin/test '!' -e '/boot' -a '!' -e '/lost+found' -a '!' -e '/media' -a '!' -e '/mnt' -a '!' -e '/etc/unitjail' -a '!' -e '/usr/src'
@@ -111,6 +104,3 @@ KillSignal = SIGTERM
 SendSIGKILL = false
 LimitCORE = 0
 LimitNOFILE = 8192
-
-# changelog
-# 2022-12-04: created Unitjail.v3 template file
