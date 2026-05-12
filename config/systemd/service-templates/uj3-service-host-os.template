@@ -78,6 +78,7 @@ BindPaths = /dev/random
 BindPaths = /dev/urandom
 BindPaths = /dev/zero
 BindPaths = /sys/fs/cgroup/
+BindPaths = /var/lib/unitjail3/user-data/%p_%i/
 Environment = "LANG=C"
 Environment = "LC_ALL=C"
 Environment = "PATH=/usr/sbin:/usr/bin:/sbin:/bin"
