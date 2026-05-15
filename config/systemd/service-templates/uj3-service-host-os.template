@@ -92,8 +92,8 @@ Environment = "UNITJAIL_INSTANCE_PID_FILE=%t/%p@%i/master.pid"
 EnvironmentFile = -/etc/default/%p
 EnvironmentFile = -/etc/default/%p@%i
 UMask = 7022
-ExecStartPre = /usr/bin/test '!' -e '/boot' -a '!' -e '/lost+found' -a '!' -e '/media' -a '!' -e '/mnt' -a '!' -e '/etc/unitjail' -a '!' -e '/usr/src'
-ExecStartPost = /usr/bin/test '!' -e '/boot' -a '!' -e '/lost+found' -a '!' -e '/media' -a '!' -e '/mnt' -a '!' -e '/etc/unitjail' -a '!' -e '/usr/src'
+ExecStartPre = /usr/bin/test '!' -e '/boot' -a '!' -e '/lost+found' -a '!' -e '/media' -a '!' -e '/mnt' -a '!' -e '/etc/unitjail' -a '!' -e '/etc/unitjail3' -a '!' -e '/usr/src'
+ExecStartPost = /usr/bin/test '!' -e '/boot' -a '!' -e '/lost+found' -a '!' -e '/media' -a '!' -e '/mnt' -a '!' -e '/etc/unitjail' -a '!' -e '/etc/unitjail3' -a '!' -e '/usr/src'
 PIDFile = %t/%p@%i/master.pid
 SuccessExitStatus = 0
 TimeoutStartSec = 15
